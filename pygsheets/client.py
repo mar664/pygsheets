@@ -34,7 +34,7 @@ try:
     flags = tools.argparser.parse_args([])
 except ImportError:
     flags = None
-
+import time
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive']
 GOOGLE_SHEET_CELL_UPDATES_LIMIT = 50000
 
@@ -417,8 +417,11 @@ class Client(object):
                 try:
                     response = request.execute()
                 except Exception as e:
+                    if str(e).find('The service is currently unavailable.') != -1:
+                        time.sleep((i + 1) * 60)
+                        continue
                     if str(e).find('timed out') == -1:
-                        raise
+                      raise
                     if i == self.retries-1:
                         raise RequestError("Timeout")
                     # print ("Cant connect, retrying ... " + str(i))
