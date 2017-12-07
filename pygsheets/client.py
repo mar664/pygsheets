@@ -419,6 +419,7 @@ class Client(object):
                 except Exception as e:
                     if str(e).find('The service is currently unavailable.') != -1:
                         time.sleep((i + 1) * 60)
+                        print ("The service is currently unavailable. Retrying ... " + str(i))
                         continue
                     if str(e).find('timed out') == -1:
                       raise
